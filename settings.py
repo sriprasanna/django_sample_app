@@ -1,3 +1,4 @@
+import os
 # Django settings for mysite project.
 
 DEBUG = True
@@ -13,7 +14,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'mysite',                      # Or path to database file if using sqlite3.
-        'USER': 'snark',                      # Not used with sqlite3.
+        'USER': 'snarkx',                      # Not used with sqlite3.
         # 'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         # 'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
@@ -144,3 +145,14 @@ LOGGING = {
         },
     }
 }
+
+if os.getenv('JENKINS_URL', False):
+    INSTALLED_APPS += ('django_jenkins', )
+    PROJECT_APPS = ('polls', )
+    DATABASES['default'].update(dict(
+        ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
+        USER=os.getenv('DBA_SQL_ADMIN'),
+        PASSWORD=os.getenv('DBA_SQL_ADMIN_PASSWORD'),
+        HOST=os.getenv('DBA_SQL_HOST'),
+        PORT=os.getenv('DBA_SQL_PORT'),
+    ))
